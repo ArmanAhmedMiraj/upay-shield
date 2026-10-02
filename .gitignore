@@ -1,0 +1,22 @@
+# secrets
+.env
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# generated data / model artifacts (regenerate with the commands in the README;
+# keeping these out of git keeps the repo small and the commit history clean).
+# frontend/demo_data.js is the ONE generated file we deliberately keep tracked --
+# it's what lets the dashboard show real results even if a judge just opens
+# dashboard.html directly, with no backend running at all.
+data/*.csv
+data/*.json
+data/*.pkl
+data/*.txt
+!data/.gitkeep
+
+# OS
+.DS_Store
