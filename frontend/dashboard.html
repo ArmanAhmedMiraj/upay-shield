@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>upay Shield — Fraud &amp; Mule Network Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A0E17;
+    --panel: #10172A;
+    --panel-2: #141D33;
+    --border: #212C47;
+    --text: #E7EAF2;
+    --text-dim: #8893AB;
+    --text-faint: #5B6480;
+    --teal: #3FD9C7;
+    --teal-dim: #1E5F58;
+    --high: #FF6B5B;
+    --high-bg: rgba(255,107,91,0.1);
+    --med: #F2B84B;
+    --med-bg: rgba(242,184,75,0.1);
+    --low: #4ADE9E;
+    --low-bg: rgba(74,222,158,0.08);
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+    --serif: 'Fraunces', serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg); color:var(--text); font-family:var(--sans);
+    font-size:14px; line-height:1.5; min-height:100vh;
+  }
+  a{color:inherit;}
+
+  /* ---------- layout ---------- */
+  .shell{display:grid; grid-template-columns:220px 1fr; min-height:100vh;}
+  .sidebar{
+    background:var(--panel); border-right:1px solid var(--border);
+    padding:28px 20px; display:flex; flex-direction:column; gap:4px;
+  }
+  .brand{display:flex; align-items:center; gap:10px; margin-bottom:34px;}
+  .brand-mark{
+    width:30px;height:30px;border-radius:8px;
+    background:linear-gradient(145deg, var(--teal), #1E8E80);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--serif); font-weight:600; color:#06211D; font-size:16px;
+  }
+  .brand-name{font-family:var(--serif); font-size:17px; font-weight:600; letter-spacing:0.2px;}
+  .brand-sub{font-size:10.5px; color:var(--text-faint); margin-top:1px;}
+
+  .nav-item{
+    display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:7px;
+    color:var(--text-dim); cursor:pointer; font-size:13.5px; transition:background .12s, color .12s;
+  }
+  .nav-item:hover{background:var(--panel-2); color:var(--text);}
+  .nav-item.active{background:var(--teal-dim); color:var(--teal);}
+  .nav-icon{width:16px; text-align:center; font-size:14px;}
+
+  .sidebar-foot{margin-top:auto; padding-top:20px; border-top:1px solid var(--border);}
+  .status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--low); margin-right:7px;}
+  .status-line{font-size:11.5px; color:var(--text-faint); display:flex; align-items:center;}
+
+  .main{padding:28px 36px 60px; max-width:1180px;}
+  .page{display:none;}
+  .page.active{display:block;}
+
+  h1.page-title{font-family:var(--serif); font-weight:500; font-size:26px; margin:0 0 4px;}
+  .page-desc{color:var(--text-dim); font-size:13.5px; margin:0 0 28px; max-width:620px;}
+
+  /* ---------- stat row ---------- */
+  .stat-row{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:30px;}
+  .stat-card{
+    background:var(--panel); border:1px solid var(--border); border-radius:10px;
+    padding:16px 18px;
+  }
+  .stat-label{font-size:11px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.6px;}
+  .stat-value{font-family:var(--serif); font-size:28px; margin-top:6px; font-weight:500;}
+  .stat-value.high{color:var(--high);}
+  .stat-value.teal{color:var(--teal);}
+  .stat-sub{font-size:11.5px; color:var(--text-faint); margin-top:3px;}
+
+  /* ---------- panels ---------- */
+  .panel{
+    background:var(--panel); border:1px solid var(--border); border-radius:10px;
+    margin-bottom:22px; overflow:hidden;
+  }
+  .panel-head{
+    padding:15px 18px; border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .panel-title{font-size:13.5px; font-weight:600;}
+  .panel-note{font-size:11.5px; color:var(--text-faint);}
+
+  /* ---------- transaction table ---------- */
+  table{width:100%; border-collapse:collapse; font-size:13px;}
+  thead th{
+    text-align:left; padding:10px 18px; font-size:10.5px; color:var(--text-faint);
+    text-transform:uppercase; letter-spacing:0.5px; font-weight:500;
+    border-bottom:1px solid var(--border);
+  }
+  tbody td{padding:11px 18px; border-bottom:1px solid var(--border); vertical-align:middle;}
+  tbody tr{cursor:pointer; transition:background .1s;}
+  tbody tr:hover{background:var(--panel-2);}
+  tbody tr:last-child td{border-bottom:none;}
+  .mono{font-family:var(--mono); font-size:12px; color:var(--text-dim);}
+  .amount{font-family:var(--mono); font-weight:500;}
+
+  .badge{
+    display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:20px;
+    font-size:11px; font-weight:500; font-family:var(--mono);
+  }
+  .badge.high{background:var(--high-bg); color:var(--high);}
+  .badge.medium{background:var(--med-bg); color:var(--med);}
+  .badge.low{background:var(--low-bg); color:var(--low);}
+  .badge-dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+
+  .risk-bar-wrap{width:72px; height:5px; background:var(--border); border-radius:3px; overflow:hidden;}
+  .risk-bar{height:100%; border-radius:3px;}
+
+  /* ---------- detail drawer ---------- */
+  .overlay{
+    display:none; position:fixed; inset:0; background:rgba(5,7,13,0.6);
+    z-index:50; backdrop-filter:blur(2px);
+  }
+  .overlay.active{display:block;}
+  .drawer{
+    position:fixed; top:0; right:0; height:100%; width:480px; max-width:92vw;
+    background:var(--panel); border-left:1px solid var(--border);
+    transform:translateX(100%); transition:transform .22s ease; z-index:51;
+    overflow-y:auto; padding:26px 26px 50px;
+  }
+  .drawer.active{transform:translateX(0);}
+  .drawer-close{
+    position:absolute; top:22px; right:22px; width:28px;height:28px;border-radius:7px;
+    background:var(--panel-2); border:1px solid var(--border); color:var(--text-dim);
+    cursor:pointer; font-size:15px; display:flex;align-items:center;justify-content:center;
+  }
+  .drawer-close:hover{color:var(--text);}
+  .drawer-eyebrow{font-family:var(--mono); font-size:11px; color:var(--text-faint); margin-bottom:6px;}
+  .drawer-title{font-family:var(--serif); font-size:21px; margin:0 0 18px; font-weight:500;}
+
+  .case-summary{
+    background:var(--panel-2); border:1px solid var(--border); border-left:3px solid var(--teal);
+    border-radius:8px; padding:14px 16px; font-size:13px; line-height:1.65; color:var(--text);
+    margin-bottom:20px;
+  }
+  .case-summary .label{font-size:10.5px; color:var(--teal); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:7px; font-weight:600;}
+
+  .kv-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px 18px; margin-bottom:20px;}
+  .kv{font-size:12.5px;}
+  .kv .k{color:var(--text-faint); font-size:10.5px; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:2px;}
+  .kv .v{font-family:var(--mono); color:var(--text);}
+
+  .feature-row{display:flex; align-items:center; gap:10px; padding:6px 0; font-size:12px;}
+  .feature-row .fname{width:170px; color:var(--text-dim); flex-shrink:0;}
+  .feature-row .fbar-wrap{flex:1; height:5px; background:var(--border); border-radius:3px; overflow:hidden;}
+  .feature-row .fbar{height:100%; background:var(--teal);}
+  .feature-row .fval{width:54px; text-align:right; font-family:var(--mono); color:var(--text-dim); flex-shrink:0;}
+
+  .decision-row{display:flex; gap:8px; margin-top:22px;}
+  .btn{
+    flex:1; padding:9px 0; border-radius:7px; border:1px solid var(--border); background:var(--panel-2);
+    color:var(--text); font-size:12.5px; font-weight:500; cursor:pointer; font-family:var(--sans);
+    transition:background .12s;
+  }
+  .btn:hover{background:#1A2440;}
+  .btn.hold{color:var(--high); border-color:rgba(255,107,91,0.35);}
+  .btn.approve{color:var(--low); border-color:rgba(74,222,158,0.35);}
+
+  /* ---------- mule network page ---------- */
+  .wallet-card{
+    background:var(--panel-2); border:1px solid var(--border); border-radius:8px;
+    padding:14px 16px; margin-bottom:10px;
+  }
+  .wallet-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;}
+  .wallet-id{font-family:var(--mono); font-size:13px; color:var(--teal);}
+  .wallet-score{font-family:var(--mono); font-size:12.5px; color:var(--high); font-weight:600;}
+  .wallet-reasons{font-size:12px; color:var(--text-dim); line-height:1.6;}
+  .wallet-reasons li{margin-bottom:2px;}
+
+  svg.graph{width:100%; height:340px; background:var(--panel-2); border-radius:8px;}
+
+  /* ---------- model page ---------- */
+  .metric-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:22px;}
+  .metric-box{background:var(--panel-2); border:1px solid var(--border); border-radius:8px; padding:16px;}
+  .metric-box .mlabel{font-size:11px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.5px;}
+  .metric-box .mval{font-family:var(--serif); font-size:24px; margin-top:6px;}
+
+  .legend{display:flex; gap:16px; margin-top:4px; font-size:11.5px; color:var(--text-dim);}
+  .legend span{display:inline-flex; align-items:center; gap:6px;}
+  .legend .dot{width:8px;height:8px;border-radius:50%;}
+
+  .architecture-note{
+    font-size:12.5px; color:var(--text-dim); line-height:1.7; padding:16px 18px;
+  }
+  .architecture-note code{font-family:var(--mono); background:var(--panel-2); padding:1px 5px; border-radius:4px; font-size:11.5px;}
+
+  @media (max-width: 900px){
+    .shell{grid-template-columns:1fr;}
+    .sidebar{display:none;}
+    .stat-row, .metric-grid{grid-template-columns:1fr 1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <nav class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">upS</div>
+      <div>
+        <div class="brand-name">upay Shield</div>
+        <div class="brand-sub">Fraud &amp; Mule Intelligence</div>
+      </div>
+    </div>
+
+    <div class="nav-item active" data-page="overview"><span class="nav-icon">◆</span> Overview</div>
+    <div class="nav-item" data-page="transactions"><span class="nav-icon">⚑</span> Flagged Transactions</div>
+    <div class="nav-item" data-page="mule"><span class="nav-icon">◎</span> Mule Network</div>
+    <div class="nav-item" data-page="model"><span class="nav-icon">▦</span> Model &amp; Architecture</div>
+
+    <div class="sidebar-foot">
+      <div class="status-line"><span class="status-dot" id="status-dot"></span><span id="status-text">Loading data…</span></div>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- ===================== OVERVIEW ===================== -->
+    <section class="page active" id="page-overview">
+      <h1 class="page-title">Fraud &amp; Mule Network Console</h1>
+      <p class="page-desc">Every transaction is scored in real time. High-risk cases are held for review instead of being auto-blocked — a human always makes the final call.</p>
+
+      <div class="stat-row" id="stat-row"></div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <span class="panel-title">Highest-risk transactions right now</span>
+          <span class="panel-note">click a row for the full case</span>
+        </div>
+        <table>
+          <thead><tr><th>Transaction</th><th>Amount</th><th>Risk</th><th>Likely pattern</th><th>Score</th></tr></thead>
+          <tbody id="overview-table-body"></tbody>
+        </table>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><span class="panel-title">Why upay Shield exists</span></div>
+        <div class="architecture-note">
+          Scam money survives today because by the time a victim reports it, the funds have already
+          moved through several wallets and been cashed out. upay Shield scores every transaction the
+          instant it happens, traces where flagged money is flowing using a transaction graph, and
+          gives an analyst a plain-language reason for every alert — so suspicious transfers can be
+          held before the money disappears, not investigated after.
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TRANSACTIONS ===================== -->
+    <section class="page" id="page-transactions">
+      <h1 class="page-title">Flagged Transactions</h1>
+      <p class="page-desc">Ranked by risk score. Medium risk prompts a step-up confirmation from the customer; high risk is held for analyst review.</p>
+
+      <div class="panel">
+        <div class="panel-head">
+          <span class="panel-title" id="txn-count-label">—</span>
+          <div>
+            <select id="risk-filter" style="background:var(--panel-2); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:6px 10px; font-family:var(--sans); font-size:12.5px;">
+              <option value="all">All flagged</option>
+              <option value="high">High risk only</option>
+              <option value="medium">Medium risk only</option>
+            </select>
+          </div>
+        </div>
+        <table>
+          <thead><tr><th>Transaction</th><th>Sender → Receiver</th><th>Amount</th><th>Channel</th><th>Risk</th><th>Score</th></tr></thead>
+          <tbody id="txn-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===================== MULE NETWORK ===================== -->
+    <section class="page" id="page-mule">
+      <h1 class="page-title">Mule Network Discovery</h1>
+      <p class="page-desc">Built from a transaction graph: wallets are nodes, transfers are edges. A mule wallet collects from many unrelated senders fast, then cashes most of it out again just as fast — agents are excluded from this check since high turnover is their normal job.</p>
+
+      <div class="stat-row" style="grid-template-columns:repeat(3,1fr);" id="mule-stat-row"></div>
+
+      <div class="panel">
+        <div class="panel-head"><span class="panel-title">Largest suspicious cluster</span><span class="panel-note">senders feeding flagged wallets</span></div>
+        <div style="padding:16px 18px;"><svg class="graph" id="cluster-svg"></svg></div>
+        <div class="legend" style="padding:0 18px 16px;">
+          <span><span class="dot" style="background:var(--high);"></span>Flagged mule wallet</span>
+          <span><span class="dot" style="background:var(--text-faint);"></span>Sender wallet</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><span class="panel-title">Top flagged wallets</span></div>
+        <div style="padding:14px 18px;" id="wallet-list"></div>
+      </div>
+    </section>
+
+    <!-- ===================== MODEL ===================== -->
+    <section class="page" id="page-model">
+      <h1 class="page-title">Model &amp; Architecture</h1>
+      <p class="page-desc">Evaluated on a held-out test set never used for training — the rulebook's own responsible-AI requirement.</p>
+
+      <div class="metric-grid" id="metric-grid"></div>
+
+      <div class="panel">
+        <div class="panel-head"><span class="panel-title">What the risk model weighs most</span></div>
+        <div style="padding:16px 18px;" id="importance-list"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><span class="panel-title">How a transaction gets scored</span></div>
+        <div class="architecture-note">
+          <code>transaction</code> → behavioral + network features (new recipient? unusual amount for
+          this sender? new device? how old is the receiving wallet? how many strangers paid it in the
+          last hour?) → <code>risk model</code> (gradient-boosted trees) → <code>risk score</code> →
+          below 0.4 passes normally, 0.4–0.7 asks the customer to confirm, 0.7+ is held and sent to
+          this dashboard with an AI-written case summary for an analyst to decide. The model is never
+          allowed to block money on its own — see Section 14 of the hackathon's Responsible AI
+          requirements.
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ===================== DETAIL DRAWER ===================== -->
+<div class="overlay" id="overlay"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-close" id="drawer-close">✕</div>
+  <div class="drawer-eyebrow" id="drawer-eyebrow"></div>
+  <div class="drawer-title" id="drawer-title"></div>
+
+  <div class="case-summary">
+    <div class="label">AI case summary</div>
+    <div id="drawer-summary"></div>
+  </div>
+
+  <div class="kv-grid" id="drawer-kv"></div>
+
+  <div class="panel-title" style="margin-bottom:10px;">Signals behind this score</div>
+  <div id="drawer-features"></div>
+
+  <div id="drawer-mule-section"></div>
+
+  <div class="decision-row">
+    <button class="btn approve" data-decision="approve">Approve</button>
+    <button class="btn hold" data-decision="hold">Hold for review</button>
+    <button class="btn" data-decision="dismiss">Dismiss</button>
+  </div>
+</div>
+
+<script src="demo_data.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  let DATA = null;
+  let USING_LIVE = false;
+  const decisions = {};
+
+  const FEATURE_LABELS = {
+    is_new_recipient: "New recipient for sender",
+    amount_vs_avg_ratio: "Amount vs. sender's average",
+    amount_zscore: "Amount z-score (vs. sender history)",
+    unusual_hour: "Unusual hour (11pm–5am)",
+    sender_velocity_10min: "Sender transactions in last 10 min",
+    new_device_for_sender: "New device for this sender",
+    receiver_age_days: "Receiver wallet age band",
+    receiver_indegree_1h: "Distinct senders to receiver (1h)",
+    receiver_fanout_30min: "Fast cash-out after receiving",
+    amount: "Raw amount (BDT)"
+  };
+
+  async function loadData(){
+    try{
+      const res = await fetch("/api/stats", {cache:"no-store"});
+      if(res.ok){
+        const stats = await res.json();
+        const txRes = await fetch("/api/transactions?risk=flagged&limit=60");
+        const transactions = await txRes.json();
+        const muleRes = await fetch("/api/mule/wallets");
+        const mule_wallets = await muleRes.json();
+        const clusterRes = await fetch("/api/mule/clusters");
+        const mule_clusters = await clusterRes.json();
+        DATA = {stats, transactions, mule_wallets, mule_clusters};
+        USING_LIVE = true;
+        setStatus(true);
+        render();
+        return;
+      }
+      throw new Error("api not ok");
+    }catch(e){
+      DATA = {
+        stats: DEMO_DATA.stats,
+        transactions: DEMO_DATA.transactions,
+        mule_wallets: DEMO_DATA.mule_wallets,
+        mule_clusters: DEMO_DATA.mule_clusters
+      };
+      USING_LIVE = false;
+      setStatus(false);
+    }
+    render();
+  }
+
+  function setStatus(live){
+    const dot = document.getElementById("status-dot");
+    const txt = document.getElementById("status-text");
+    if(live){
+      dot.style.background = "var(--low)";
+      txt.textContent = "Live API connected";
+    }else{
+      dot.style.background = "var(--med)";
+      txt.textContent = "Demo snapshot (offline)";
+    }
+  }
+
+  function fmtAmount(n){
+    return "৳" + Number(n).toLocaleString("en-US", {maximumFractionDigits:0});
+  }
+
+  function riskColor(level){
+    return level === "high" ? "var(--high)" : level === "medium" ? "var(--med)" : "var(--low)";
+  }
+
+  function badge(level){
+    return `<span class="badge ${level}"><span class="badge-dot"></span>${level}</span>`;
+  }
+
+  function scamTypeLabel(guess){
+    const map = {
+      social_engineering: "Scam-call style transfer",
+      mule_ring: "Mule pass-through",
+      account_takeover: "Possible account takeover",
+      unknown: "Unusual pattern"
+    };
+    return map[guess] || guess;
+  }
+
+  // ---------------- render: overview ----------------
+  function renderOverview(){
+    const s = DATA.stats;
+    const statRow = document.getElementById("stat-row");
+    statRow.innerHTML = `
+      <div class="stat-card">
+        <div class="stat-label">Transactions scored</div>
+        <div class="stat-value teal">${s.total_transactions.toLocaleString()}</div>
+        <div class="stat-sub">rolling window</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Held for review</div>
+        <div class="stat-value high">${s.flagged_high.toLocaleString()}</div>
+        <div class="stat-sub">risk score ≥ 0.70</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Flagged wallets</div>
+        <div class="stat-value">${s.mule_wallets_detected}</div>
+        <div class="stat-sub">mule-pattern match</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Model recall (test set)</div>
+        <div class="stat-value">${Math.round(s.model_evaluation["threshold_0.5"].recall*100)}%</div>
+        <div class="stat-sub">${Math.round(s.model_evaluation["threshold_0.5"].precision*100)}% precision</div>
+      </div>
+    `;
+
+    const body = document.getElementById("overview-table-body");
+    const top = DATA.transactions.slice().sort((a,b)=>b.risk_score-a.risk_score).slice(0,8);
+    body.innerHTML = top.map(t => rowHtml(t, ["txn","amount","risk","pattern","score"])).join("");
+    attachRowHandlers(body, top);
+  }
+
+  // ---------------- render: transactions page ----------------
+  function renderTransactions(filter){
+    filter = filter || "all";
+    let list = DATA.transactions.slice().sort((a,b)=>b.risk_score-a.risk_score);
+    if(filter === "high") list = list.filter(t=>t.risk_level==="high");
+    if(filter === "medium") list = list.filter(t=>t.risk_level==="medium");
+
+    document.getElementById("txn-count-label").textContent = `${list.length} transactions`;
+    const body = document.getElementById("txn-table-body");
+    body.innerHTML = list.map(t => `
+      <tr data-id="${t.txn_id}">
+        <td class="mono">${t.txn_id}</td>
+        <td class="mono">${t.sender_id} → ${t.receiver_id}</td>
+        <td class="amount">${fmtAmount(t.amount)}</td>
+        <td>${t.channel}</td>
+        <td>${badge(t.risk_level)}</td>
+        <td class="mono">${(t.risk_score*100).toFixed(0)}%</td>
+      </tr>
+    `).join("");
+    attachRowHandlers(body, list);
+  }
+
+  function rowHtml(t, cols){
+    const guess = t.ai_case_summary ? t.ai_case_summary.scam_type_guess : "unknown";
+    return `<tr data-id="${t.txn_id}">
+      <td class="mono">${t.txn_id}</td>
+      <td class="amount">${fmtAmount(t.amount)}</td>
+      <td>${badge(t.risk_level)}</td>
+      <td style="color:var(--text-dim); font-size:12.5px;">${scamTypeLabel(guess)}</td>
+      <td>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div class="risk-bar-wrap"><div class="risk-bar" style="width:${t.risk_score*100}%; background:${riskColor(t.risk_level)};"></div></div>
+          <span class="mono" style="font-size:11.5px;">${(t.risk_score*100).toFixed(0)}%</span>
+        </div>
+      </td>
+    </tr>`;
+  }
+
+  function attachRowHandlers(tbody, list){
+    const byId = {};
+    list.forEach(t => byId[t.txn_id] = t);
+    tbody.querySelectorAll("tr").forEach(tr=>{
+      tr.addEventListener("click", ()=> openDrawer(byId[tr.dataset.id]));
+    });
+  }
+
+  // ---------------- drawer ----------------
+  async function openDrawer(t){
+    document.getElementById("drawer-eyebrow").textContent = `${t.channel.toUpperCase()} · ${t.timestamp}`;
+    document.getElementById("drawer-title").textContent = t.txn_id;
+
+    document.getElementById("overlay").classList.add("active");
+    document.getElementById("drawer").classList.add("active");
+
+    // list views only carry a lightweight scam-type guess; fetch the full
+    // grounded case summary on demand when the analyst actually opens it
+    // (this is also closer to how a real investigation assistant would
+    // work -- generate the narrative when a human asks for it, not for
+    // every row up front)
+    if(USING_LIVE && (!t.ai_case_summary || !t.ai_case_summary.summary)){
+      document.getElementById("drawer-summary").textContent = "Generating case summary…";
+      try{
+        const res = await fetch(`/api/transactions/${t.txn_id}`);
+        if(res.ok) t = await res.json();
+      }catch(e){}
+    }
+
+    const summary = (t.ai_case_summary && t.ai_case_summary.summary)
+      ? t.ai_case_summary.summary
+      : "No case summary available.";
+    document.getElementById("drawer-summary").textContent = summary;
+
+    document.getElementById("drawer-kv").innerHTML = `
+      <div class="kv"><div class="k">Sender</div><div class="v">${t.sender_id}</div></div>
+      <div class="kv"><div class="k">Receiver</div><div class="v">${t.receiver_id}</div></div>
+      <div class="kv"><div class="k">Amount</div><div class="v">${fmtAmount(t.amount)}</div></div>
+      <div class="kv"><div class="k">District</div><div class="v">${t.sender_district || "—"}</div></div>
+      <div class="kv"><div class="k">Risk score</div><div class="v" style="color:${riskColor(t.risk_level)}">${(t.risk_score*100).toFixed(1)}%</div></div>
+      <div class="kv"><div class="k">Risk level</div><div class="v">${badge(t.risk_level)}</div></div>
+    `;
+
+    const feats = t.features || {};
+    const order = ["amount_vs_avg_ratio","amount_zscore","is_new_recipient","unusual_hour",
+                    "new_device_for_sender","sender_velocity_10min","receiver_age_days",
+                    "receiver_indegree_1h","receiver_fanout_30min"];
+    const maxVals = {amount_vs_avg_ratio:15, amount_zscore:25, is_new_recipient:1, unusual_hour:1,
+                      new_device_for_sender:1, sender_velocity_10min:5, receiver_age_days:3,
+                      receiver_indegree_1h:12, receiver_fanout_30min:1};
+    document.getElementById("drawer-features").innerHTML = order.map(k=>{
+      const v = feats[k];
+      if(v === undefined) return "";
+      const pct = Math.min(100, (v / (maxVals[k]||1)) * 100);
+      return `<div class="feature-row">
+        <div class="fname">${FEATURE_LABELS[k]||k}</div>
+        <div class="fbar-wrap"><div class="fbar" style="width:${pct}%;"></div></div>
+        <div class="fval">${typeof v === "number" ? v.toFixed(2) : v}</div>
+      </div>`;
+    }).join("");
+
+    const muleSection = document.getElementById("drawer-mule-section");
+    if(t.mule_network_evidence){
+      const m = t.mule_network_evidence;
+      muleSection.innerHTML = `
+        <div class="panel-title" style="margin:18px 0 10px;">Mule network evidence</div>
+        <div class="wallet-card">
+          <div class="wallet-head"><span class="wallet-id">${m.wallet}</span><span class="wallet-score">score ${m.mule_score}</span></div>
+          <ul class="wallet-reasons">${m.reasons.map(r=>`<li>${r}</li>`).join("")}</ul>
+        </div>
+      `;
+    } else {
+      muleSection.innerHTML = "";
+    }
+
+    document.querySelectorAll(".decision-row .btn").forEach(btn=>{
+      btn.onclick = async ()=>{
+        decisions[t.txn_id] = btn.dataset.decision;
+        if(USING_LIVE){
+          try{
+            await fetch(`/api/transactions/${t.txn_id}/decision`, {
+              method:"POST", headers:{"Content-Type":"application/json"},
+              body: JSON.stringify({decision: btn.dataset.decision})
+            });
+          }catch(e){}
+        }
+        btn.textContent = btn.textContent.split(" ✓")[0] + " ✓";
+        setTimeout(closeDrawer, 500);
+      };
+    });
+
+  }
+
+  function closeDrawer(){
+    document.getElementById("overlay").classList.remove("active");
+    document.getElementById("drawer").classList.remove("active");
+  }
+  document.getElementById("drawer-close").addEventListener("click", closeDrawer);
+  document.getElementById("overlay").addEventListener("click", closeDrawer);
+
+  // ---------------- mule network page ----------------
+  function renderMule(){
+    const s = DATA.stats;
+    document.getElementById("mule-stat-row").innerHTML = `
+      <div class="stat-card">
+        <div class="stat-label">Candidate wallets checked</div>
+        <div class="stat-value teal">2,006</div>
+        <div class="stat-sub">excluding licensed agents</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Flagged as mule-like</div>
+        <div class="stat-value high">${s.mule_wallets_detected}</div>
+        <div class="stat-sub">fan-in + fast cash-out</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Suspicious clusters</div>
+        <div class="stat-value">${s.suspicious_clusters}</div>
+        <div class="stat-sub">connected wallet groups</div>
+      </div>
+    `;
+
+    const list = document.getElementById("wallet-list");
+    list.innerHTML = DATA.mule_wallets.slice(0,8).map(w=>`
+      <div class="wallet-card">
+        <div class="wallet-head"><span class="wallet-id">${w.wallet}</span><span class="wallet-score">score ${w.mule_score}</span></div>
+        <ul class="wallet-reasons">${w.reasons.map(r=>`<li>${r}</li>`).join("")}</ul>
+      </div>
+    `).join("");
+
+    drawClusterGraph();
+  }
+
+  function drawClusterGraph(){
+    const svg = document.getElementById("cluster-svg");
+    const cluster = (DATA.mule_clusters||[]).slice().sort((a,b)=>a.size-b.size)
+                      .find(c => c.size >= 4 && c.size <= 16) || (DATA.mule_clusters||[])[0];
+    if(!cluster){ svg.innerHTML = ""; return; }
+
+    const wallets = cluster.wallets.slice(0, 14);
+    const flaggedSet = new Set(DATA.mule_wallets.map(w=>w.wallet));
+    const cx = 340, cy = 170, r = 120;
+    const centerFlagged = wallets.find(w => flaggedSet.has(w)) || wallets[0];
+    const others = wallets.filter(w => w !== centerFlagged);
+
+    let nodes = [{id: centerFlagged, x: cx, y: cy, flagged:true}];
+    others.forEach((w,i)=>{
+      const angle = (i / others.length) * 2 * Math.PI;
+      nodes.push({id:w, x: cx + r*Math.cos(angle), y: cy + r*Math.sin(angle), flagged:flaggedSet.has(w)});
+    });
+
+    let svgContent = "";
+    nodes.slice(1).forEach(n=>{
+      svgContent += `<line x1="${nodes[0].x}" y1="${nodes[0].y}" x2="${n.x}" y2="${n.y}" stroke="#2A3659" stroke-width="1.3"/>`;
+    });
+    nodes.forEach(n=>{
+      const color = n.flagged ? "var(--high)".replace("var(--high)","#FF6B5B") : "#5B6480";
+      const radius = n.flagged ? 9 : 5;
+      svgContent += `<circle cx="${n.x}" cy="${n.y}" r="${radius}" fill="${color}" opacity="${n.flagged?1:0.85}"/>`;
+      if(n.flagged){
+        svgContent += `<text x="${n.x}" y="${n.y-16}" fill="#E7EAF2" font-size="11" font-family="IBM Plex Mono" text-anchor="middle">${n.id}</text>`;
+      }
+    });
+    svg.setAttribute("viewBox", "0 0 680 340");
+    svg.innerHTML = svgContent;
+  }
+
+  // ---------------- model page ----------------
+  function renderModel(){
+    const ev = DATA.stats.model_evaluation;
+    const grid = document.getElementById("metric-grid");
+    grid.innerHTML = `
+      <div class="metric-box"><div class="mlabel">ROC-AUC</div><div class="mval">${ev.roc_auc}</div></div>
+      <div class="metric-box"><div class="mlabel">Precision @ 0.5</div><div class="mval">${(ev["threshold_0.5"].precision*100).toFixed(1)}%</div></div>
+      <div class="metric-box"><div class="mlabel">Recall @ 0.5</div><div class="mval">${(ev["threshold_0.5"].recall*100).toFixed(1)}%</div></div>
+    `;
+
+    const imp = DATA.stats.feature_importance;
+    const max = Math.max(...Object.values(imp));
+    const list = document.getElementById("importance-list");
+    list.innerHTML = Object.entries(imp).map(([k,v])=>`
+      <div class="feature-row">
+        <div class="fname">${FEATURE_LABELS[k]||k}</div>
+        <div class="fbar-wrap"><div class="fbar" style="width:${(v/max)*100}%;"></div></div>
+        <div class="fval">${(v*100).toFixed(1)}%</div>
+      </div>
+    `).join("");
+  }
+
+  function render(){
+    renderOverview();
+    renderTransactions("all");
+    renderMule();
+    renderModel();
+  }
+
+  // ---------------- nav ----------------
+  document.querySelectorAll(".nav-item").forEach(item=>{
+    item.addEventListener("click", ()=>{
+      document.querySelectorAll(".nav-item").forEach(i=>i.classList.remove("active"));
+      item.classList.add("active");
+      document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+      document.getElementById("page-"+item.dataset.page).classList.add("active");
+    });
+  });
+
+  document.getElementById("risk-filter").addEventListener("change", (e)=>{
+    renderTransactions(e.target.value);
+  });
+
+  loadData();
+})();
+</script>
+</body>
+</html>
