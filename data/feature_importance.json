@@ -1,0 +1,12 @@
+{
+  "amount_vs_avg_ratio": 0.42584934379409645,
+  "amount_zscore": 0.19713679606877382,
+  "sender_velocity_10min": 0.13220196936127884,
+  "receiver_age_days": 0.12349164786791916,
+  "new_device_for_sender": 0.030094815195903728,
+  "amount": 0.02772426650147319,
+  "unusual_hour": 0.02733062780952477,
+  "receiver_indegree_1h": 0.02503315282997786,
+  "receiver_fanout_30min": 0.010958729433570711,
+  "is_new_recipient": 0.00017865113748135312
+}

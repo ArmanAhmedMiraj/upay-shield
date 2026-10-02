@@ -1,0 +1,291 @@
+{
+  "graph_summary": {
+    "total_wallets": 2539,
+    "total_edges": 60934,
+    "candidate_wallets_checked": 2006,
+    "flagged_wallets": 12
+  },
+  "top_suspicious_wallets": [
+    {
+      "wallet": "Mb4170b",
+      "distinct_senders_total": 14,
+      "max_distinct_senders_in_1h": 11,
+      "total_received": 141929.07,
+      "total_sent_out": 137062.23,
+      "cash_out_ratio": 0.966,
+      "first_seen": "2026-08-31T20:14:00",
+      "wallet_age_days": 29.07,
+      "pass_through_minutes_after_last_inflow": 26.0,
+      "mule_score": 0.85,
+      "reasons": [
+        "11 distinct senders within a single hour (very high burst)",
+        "relatively new wallet (29 days of history)",
+        "97% of received funds moved back out within 26 minutes of the last incoming transfer"
+      ]
+    },
+    {
+      "wallet": "M3e7fd9",
+      "distinct_senders_total": 14,
+      "max_distinct_senders_in_1h": 10,
+      "total_received": 132911.88,
+      "total_sent_out": 125396.16,
+      "cash_out_ratio": 0.943,
+      "first_seen": "2026-09-02T19:03:00",
+      "wallet_age_days": 27.12,
+      "pass_through_minutes_after_last_inflow": 26.0,
+      "mule_score": 0.85,
+      "reasons": [
+        "10 distinct senders within a single hour (very high burst)",
+        "relatively new wallet (27 days of history)",
+        "94% of received funds moved back out within 26 minutes of the last incoming transfer"
+      ]
+    },
+    {
+      "wallet": "Ma9f7f0",
+      "distinct_senders_total": 14,
+      "max_distinct_senders_in_1h": 10,
+      "total_received": 139388.12,
+      "total_sent_out": 131465.81,
+      "cash_out_ratio": 0.943,
+      "first_seen": "2026-09-14T14:00:00",
+      "wallet_age_days": 15.33,
+      "pass_through_minutes_after_last_inflow": 20.0,
+      "mule_score": 0.85,
+      "reasons": [
+        "10 distinct senders within a single hour (very high burst)",
+        "relatively new wallet (15 days of history)",
+        "94% of received funds moved back out within 20 minutes of the last incoming transfer"
+      ]
+    },
+    {
+      "wallet": "M883c63",
+      "distinct_senders_total": 14,
+      "max_distinct_senders_in_1h": 9,
+      "total_received": 147933.12,
+      "total_sent_out": 133208.9,
+      "cash_out_ratio": 0.9,
+      "first_seen": "2026-09-22T09:01:00",
+      "wallet_age_days": 7.54,
+      "pass_through_minutes_after_last_inflow": 44.0,
+      "mule_score": 0.85,
+      "reasons": [
+        "9 distinct senders within a single hour (very high burst)",
+        "relatively new wallet (8 days of history)",
+        "90% of received funds moved back out within 44 minutes of the last incoming transfer"
+      ]
+    },
+    {
+      "wallet": "Mf7d992",
+      "distinct_senders_total": 14,
+      "max_distinct_senders_in_1h": 10,
+      "total_received": 128149.02,
+      "total_sent_out": 109766.23,
+      "cash_out_ratio": 0.857,
+      "first_seen": "2026-08-23T19:04:00",
+      "wallet_age_days": 37.12,
+      "pass_through_minutes_after_last_inflow": 24.0,
+      "mule_score": 0.75,
+      "reasons": [
+        "10 distinct senders within a single hour (very high burst)",
+        "86% of received funds moved back out within 24 minutes of the last incoming transfer"
+      ]
+    },
+    {
+      "wallet": "M70b5bd",
+      "distinct_senders_total": 14,
+      "max_distinct_senders_in_1h": 11,
+      "total_received": 149451.6,
+      "total_sent_out": 142852.71,
+      "cash_out_ratio": 0.956,
+      "first_seen": "2026-08-24T09:09:00",
+      "wallet_age_days": 36.53,
+      "pass_through_minutes_after_last_inflow": 42.0,
+      "mule_score": 0.75,
+      "reasons": [
+        "11 distinct senders within a single hour (very high burst)",
+        "96% of received funds moved back out within 42 minutes of the last incoming transfer"
+      ]
+    },
+    {
+      "wallet": "U01141",
+      "distinct_senders_total": 21,
+      "max_distinct_senders_in_1h": 3,
+      "total_received": 42228.33,
+      "total_sent_out": 32798.32,
+      "cash_out_ratio": 0.777,
+      "first_seen": "2026-08-01T14:36:00",
+      "wallet_age_days": 59.31,
+      "pass_through_minutes_after_last_inflow": 98.0,
+      "mule_score": 0.55,
+      "reasons": [
+        "3 distinct senders within a single hour",
+        "78% of received funds moved back out within 98 minutes of the last incoming transfer"
+      ]
+    },
+    {
+      "wallet": "U01481",
+      "distinct_senders_total": 25,
+      "max_distinct_senders_in_1h": 3,
+      "total_received": 41990.44,
+      "total_sent_out": 54838.24,
+      "cash_out_ratio": 1.306,
+      "first_seen": "2026-08-02T16:17:00",
+      "wallet_age_days": 58.24,
+      "pass_through_minutes_after_last_inflow": 169.0,
+      "mule_score": 0.55,
+      "reasons": [
+        "3 distinct senders within a single hour",
+        "131% of received funds moved back out within 169 minutes of the last incoming transfer"
+      ]
+    },
+    {
+      "wallet": "U00211",
+      "distinct_senders_total": 23,
+      "max_distinct_senders_in_1h": 3,
+      "total_received": 37312.73,
+      "total_sent_out": 31106.31,
+      "cash_out_ratio": 0.834,
+      "first_seen": "2026-08-02T20:32:00",
+      "wallet_age_days": 58.06,
+      "pass_through_minutes_after_last_inflow": 91.0,
+      "mule_score": 0.55,
+      "reasons": [
+        "3 distinct senders within a single hour",
+        "83% of received funds moved back out within 91 minutes of the last incoming transfer"
+      ]
+    },
+    {
+      "wallet": "U00093",
+      "distinct_senders_total": 26,
+      "max_distinct_senders_in_1h": 3,
+      "total_received": 58683.61,
+      "total_sent_out": 45035.34,
+      "cash_out_ratio": 0.767,
+      "first_seen": "2026-08-03T09:27:00",
+      "wallet_age_days": 57.52,
+      "pass_through_minutes_after_last_inflow": 73.0,
+      "mule_score": 0.55,
+      "reasons": [
+        "3 distinct senders within a single hour",
+        "77% of received funds moved back out within 73 minutes of the last incoming transfer"
+      ]
+    },
+    {
+      "wallet": "U01156",
+      "distinct_senders_total": 16,
+      "max_distinct_senders_in_1h": 3,
+      "total_received": 24649.39,
+      "total_sent_out": 47037.81,
+      "cash_out_ratio": 1.908,
+      "first_seen": "2026-08-03T11:29:00",
+      "wallet_age_days": 57.44,
+      "pass_through_minutes_after_last_inflow": 178.0,
+      "mule_score": 0.55,
+      "reasons": [
+        "3 distinct senders within a single hour",
+        "191% of received funds moved back out within 178 minutes of the last incoming transfer"
+      ]
+    },
+    {
+      "wallet": "U01480",
+      "distinct_senders_total": 26,
+      "max_distinct_senders_in_1h": 3,
+      "total_received": 63392.84,
+      "total_sent_out": 59440.31,
+      "cash_out_ratio": 0.938,
+      "first_seen": "2026-08-10T14:59:00",
+      "wallet_age_days": 50.29,
+      "pass_through_minutes_after_last_inflow": 179.0,
+      "mule_score": 0.55,
+      "reasons": [
+        "3 distinct senders within a single hour",
+        "94% of received funds moved back out within 179 minutes of the last incoming transfer"
+      ]
+    }
+  ],
+  "suspicious_clusters": [
+    {
+      "cluster_id": 0,
+      "size": 178,
+      "wallets": [
+        "A0055",
+        "U01319",
+        "U01086",
+        "U01267",
+        "U01423",
+        "U01639",
+        "A0033",
+        "U00109",
+        "U01548",
+        "U01371",
+        "U01461",
+        "U00859",
+        "U00201",
+        "U01380",
+        "U00269",
+        "U00199",
+        "A0113",
+        "U01409",
+        "U00370",
+        "A0104",
+        "U01152",
+        "U00930",
+        "U01869",
+        "U01842",
+        "U01599"
+      ]
+    },
+    {
+      "cluster_id": 1,
+      "size": 29,
+      "wallets": [
+        "U00415",
+        "U01860",
+        "U00815",
+        "U01822",
+        "U00372",
+        "Mb4170b",
+        "U01841",
+        "U01126",
+        "U00367",
+        "U01208",
+        "U00486",
+        "M883c63",
+        "U01590",
+        "U00998",
+        "U00718",
+        "U00444",
+        "U01023",
+        "U00078",
+        "U00882",
+        "U01970",
+        "U01851",
+        "U00573",
+        "U01055",
+        "U00609",
+        "U01025"
+      ]
+    },
+    {
+      "cluster_id": 2,
+      "size": 15,
+      "wallets": [
+        "U01383",
+        "U01942",
+        "U01948",
+        "U01463",
+        "U01338",
+        "U01612",
+        "U01065",
+        "U01615",
+        "M3e7fd9",
+        "U00410",
+        "U00948",
+        "U01396",
+        "U00474",
+        "U01350",
+        "U01487"
+      ]
+    }
+  ]
+}

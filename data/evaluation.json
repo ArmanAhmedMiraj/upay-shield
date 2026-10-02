@@ -1,0 +1,35 @@
+{
+  "test_set_size": 24245,
+  "test_set_positives": 126,
+  "roc_auc": 0.9955,
+  "average_precision": 0.9417,
+  "threshold_0.5": {
+    "precision": 0.9478,
+    "recall": 0.8651,
+    "f1": 0.9046
+  },
+  "threshold_0.7_high_risk": {
+    "precision": 0.9727,
+    "recall": 0.8492
+  },
+  "confusion_matrix": {
+    "labels": [
+      "actual_normal",
+      "actual_scam"
+    ],
+    "columns": [
+      "pred_normal",
+      "pred_scam"
+    ],
+    "matrix": [
+      [
+        24113,
+        6
+      ],
+      [
+        17,
+        109
+      ]
+    ]
+  }
+}
